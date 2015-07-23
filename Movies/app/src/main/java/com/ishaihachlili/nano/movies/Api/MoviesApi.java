@@ -1,9 +1,6 @@
 package com.ishaihachlili.nano.movies.Api;
 
-import com.ishaihachlili.nano.movies.Api.Model.MovieModel;
-import com.ishaihachlili.nano.movies.Api.Model.MovieResultsModel;
-
-import java.util.List;
+import com.ishaihachlili.nano.movies.Api.Model.*;
 
 import retrofit.RestAdapter;
 
@@ -16,19 +13,29 @@ public class MoviesApi {
     private final String BaseUrl = "http://api.themoviedb.org/3/";
     private final String ApiKey = "123456";
 
-    public MovieModel[] GetMovies(String sortBy){
+    public MovieItemModel[] GetMovies(String sortBy){
+        MovieResultsModel result = getApi().movies(sortBy, ApiKey);
+
+        return result.getMovies();
+    }
+
+    public MovieDetailsModel GetMovieDetails(Integer movieId){
+        MovieDetailsModel result = getApi().movieDetails(movieId, ApiKey);
+
+        return result;
+    }
+
+    private IMoviesDbApi getApi() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(BaseUrl)  //call your base url
                 .build();
 
         IMoviesDbApi api = restAdapter.create(IMoviesDbApi.class);
-        MovieResultsModel result = api.movies(sortBy, ApiKey);
-
-        return result.getMovies();
+        return api;
     }
 //
-//    public MovieModel[] GetMovies(String sortBy){
+//    public MovieItemModel[] GetMovies(String sortBy){
 //        HttpURLConnection urlConnection = null;
 //        BufferedReader reader = null;
 //
@@ -99,7 +106,7 @@ public class MoviesApi {
 //        return null;
 //    }
 //
-//    private MovieModel[] getMoviesDataFromJson(String moviesJson)
+//    private MovieItemModel[] getMoviesDataFromJson(String moviesJson)
 //            throws JSONException {
 //
 //        // These are the names of the JSON objects that need to be extracted.
@@ -110,18 +117,18 @@ public class MoviesApi {
 //        JSONObject moviesJsonObject = new JSONObject(moviesJson);
 //        JSONArray moviesArray = moviesJsonObject.getJSONArray(TMDB_LIST);
 //
-//        MovieModel[] resultMovies = new MovieModel[moviesArray.length()];
+//        MovieItemModel[] resultMovies = new MovieItemModel[moviesArray.length()];
 //
 //        for(int i = 0; i < moviesArray.length(); i++) {
 //            // Get the JSON object representing the movie
 //            JSONObject movie = moviesArray.getJSONObject(i);
-//            resultMovies[i] = new MovieModel(movie.getString(TMDB_POSTERPATH), movie.getInt(TMDB_MOVIEID));
+//            resultMovies[i] = new MovieItemModel(movie.getString(TMDB_POSTERPATH), movie.getInt(TMDB_MOVIEID));
 //        }
 //        return resultMovies;
 //
 //    }
 
-//    public MovieModel GetMovieDetails(Integer movieId){
+//    public MovieItemModel GetMovieDetails(Integer movieId){
 //        HttpURLConnection urlConnection = null;
 //        BufferedReader reader = null;
 //

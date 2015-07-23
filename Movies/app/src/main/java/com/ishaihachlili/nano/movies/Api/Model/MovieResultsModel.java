@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName;
 public class MovieResultsModel {
     @SerializedName("results")
     @Expose
-    private MovieModel[] movies;
+    private MovieItemModel[] movies;
 
-    public MovieModel[] getMovies() {
+    public MovieItemModel[] getMovies() {
         return movies;
     }
 
-    public void setMovies(MovieModel[] movies) {
+    public void setMovies(MovieItemModel[] movies) {
         this.movies = movies;
     }
 }

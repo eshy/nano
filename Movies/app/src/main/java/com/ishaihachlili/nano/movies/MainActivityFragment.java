@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 
-import com.ishaihachlili.nano.movies.Api.Model.MovieModel;
+import com.ishaihachlili.nano.movies.Api.Model.MovieItemModel;
 import com.ishaihachlili.nano.movies.Api.MoviesApi;
 
 
@@ -90,11 +90,11 @@ public class MainActivityFragment extends Fragment {
         updateMovies();
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, MovieModel[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, MovieItemModel[]> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected MovieModel[] doInBackground(String... params) {
+        protected MovieItemModel[] doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
@@ -103,10 +103,10 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(MovieModel[] result) {
+        protected void onPostExecute(MovieItemModel[] result) {
             if (result != null) {
                 mMoviesAdapter.clear();
-                for(MovieModel movie : result) {
+                for(MovieItemModel movie : result) {
                     mMoviesAdapter.add(movie);
                 }
             }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Ishai on 7/23/2015.
  */
-public class MovieModel {
+public class MovieItemModel {
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
