@@ -16,11 +16,6 @@ public class MovieItemModel {
     @Expose
     private Integer movieId;
 
-
-    public String getMoviePosterPath() {
-        return "http://image.tmdb.org/t/p/" + "w185" + posterPath;
-    }
-
     public String getPosterPath() {
         return posterPath;
     }

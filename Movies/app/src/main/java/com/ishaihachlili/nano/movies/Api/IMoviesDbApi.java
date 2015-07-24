@@ -11,7 +11,7 @@ import retrofit.http.Query;
  */
 public interface IMoviesDbApi {
     @GET("/discover/movie")
-    MovieResultsModel movies(@Query("sort_by") String sortBy, @Query("api_key") String apiKey);
+    MovieResultsModel movies(@Query("sort_by") String sortBy, @Query("vote_count.gte") Integer minVoteCount, @Query("api_key") String apiKey);
 
     @GET("/movie/{id}")
     MovieDetailsModel movieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey);
