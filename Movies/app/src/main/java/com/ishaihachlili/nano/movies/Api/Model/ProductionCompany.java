@@ -1,7 +1,6 @@
-package com.ishaihachlili.nano.movies.Api.Model;
+package com.ishaihachlili.nano.movies.api.Model;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 public class ProductionCompany {
 

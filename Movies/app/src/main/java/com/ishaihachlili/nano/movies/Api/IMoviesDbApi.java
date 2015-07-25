@@ -1,7 +1,8 @@
-package com.ishaihachlili.nano.movies.Api;
+package com.ishaihachlili.nano.movies.api;
 
-import com.ishaihachlili.nano.movies.Api.Model.*;
+import com.ishaihachlili.nano.movies.api.Model.*;
 
+import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -11,8 +12,8 @@ import retrofit.http.Query;
  */
 public interface IMoviesDbApi {
     @GET("/discover/movie")
-    MovieResultsModel movies(@Query("sort_by") String sortBy, @Query("vote_count.gte") Integer minVoteCount, @Query("api_key") String apiKey);
+    void movies(@Query("sort_by") String sortBy, @Query("vote_count.gte") Integer minVoteCount, @Query("api_key") String apiKey, Callback<MovieResultsModel> callback);
 
     @GET("/movie/{id}")
-    MovieDetailsModel movieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey);
+    void movieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey, Callback<MovieDetailsModel> callback);
 }
