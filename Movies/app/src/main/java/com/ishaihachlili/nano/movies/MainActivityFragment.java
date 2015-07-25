@@ -29,6 +29,7 @@ public class MainActivityFragment extends BaseFragment {
 
     private MoviesArrayAdapter mMoviesAdapter;
     private MovieItemModel[] mMovies;
+    private String mSortOrder;
 
     public MainActivityFragment() {
     }
@@ -89,6 +90,7 @@ public class MainActivityFragment extends BaseFragment {
             Gson gson = new Gson();
             String json = gson.toJson(mMovies);
             outState.putString("movies", json);
+            //outState.putString("movies_sort", Utility.getSortingOrdr(getActivity()));
         }
     }
 
@@ -99,6 +101,10 @@ public class MainActivityFragment extends BaseFragment {
 
         if (savedInstanceState != null){
             Log.d(LOG_TAG, "MainActivityFragment - onActivityCreated - LoadMovies");
+//            String sortOrder = Utility.getSortingOrdr(getActivity());
+//            if (savedInstanceState.getString("movies_sort") == sortOrder) {
+//            }
+
             //using gson instead of parcelable because the class already has the attributes for json
             Gson gson = new Gson();
             mMovies = gson.fromJson(savedInstanceState.getString("movies", "[]"), MovieItemModel[].class);
@@ -108,10 +114,8 @@ public class MainActivityFragment extends BaseFragment {
 
     private void updateMovies() {
         Log.d(LOG_TAG, "MainActivityFragment - updateMovies");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.pref_sorting_key), getString(R.string.pref_sorting_default_value));
-
-        Bus.post(new GetMoviesEvent(sortOrder));
+        mSortOrder = Utility.getSortingOrdr(getActivity());
+        Bus.post(new GetMoviesEvent(mSortOrder));
     }
 
     @Subscribe
@@ -135,7 +139,7 @@ public class MainActivityFragment extends BaseFragment {
     public void onStart() {
         Log.d(LOG_TAG, "MainActivityFragment - onStart");
         super.onStart();
-        if (mMovies == null || mMovies.length==0) {
+        if (mMovies == null || mMovies.length==0 || mSortOrder != Utility.getSortingOrdr(getActivity())) {
             Log.d(LOG_TAG, "MainActivityFragment - onStart - get movies");
             updateMovies();
         }
