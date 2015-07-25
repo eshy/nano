@@ -70,7 +70,9 @@ android:layout_gravity="center_horizontal" >
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/movie_synopsis"
             android:paddingLeft="14dp"
-            android:paddingRight="14dp" />
+            android:paddingRight="14dp"
+            android:paddingBottom="14dp"
+            android:paddingTop="10dp"/>
 
     </LinearLayout>
 
