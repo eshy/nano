@@ -2,12 +2,14 @@ package com.ishaihachlili.nano.movies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.ishaihachlili.nano.movies.api.Model.MovieDetailsModel;
 import com.ishaihachlili.nano.movies.api.MoviesApiClient;
 import com.ishaihachlili.nano.movies.bus.GetMovieDetailsEvent;
@@ -20,7 +22,9 @@ import com.squareup.picasso.Picasso;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends BaseFragment {
+    private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
+    private MovieDetailsModel mMovieDetails;
     private ImageView mPosterImageView;
     private TextView mTitleTextView;
     private TextView mReleaseTextView;
@@ -31,8 +35,6 @@ public class DetailActivityFragment extends BaseFragment {
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +51,33 @@ public class DetailActivityFragment extends BaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        Log.d(LOG_TAG, "DetailActivityFragment - onSaveInstanceState");
+        if (mMovieDetails != null) {
+//            Log.d(LOG_TAG, "DetailActivityFragment - onSaveInstanceState - Save Movie Details");
+            Gson gson = new Gson();
+            String json = gson.toJson(mMovieDetails);
+            outState.putString("moviedetails", json);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        Log.d(LOG_TAG, "DetailActivityFragment - onActivityCreated");
+
+        if (savedInstanceState != null){
+//            Log.d(LOG_TAG, "DetailActivityFragment - onActivityCreated - Load Movie Details");
+
+            //using gson instead of parcelable because the class already has the attributes for json
+            Gson gson = new Gson();
+            mMovieDetails = gson.fromJson(savedInstanceState.getString("moviedetails", "{}"), MovieDetailsModel.class);
+            updateMovieDetails();
+        }
+    }
+
     private void getMovieDetails() {
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
@@ -60,32 +89,37 @@ public class DetailActivityFragment extends BaseFragment {
 
     }
 
-
     @Subscribe
     public void onGotMoviesEvent(GotMovieDetailsEvent result){
         if (result.getResult() != null) {
-            MovieDetailsModel movie = result.getResult();
-            if (movie != null) {
-                String posterPath = MoviesApiClient.BuildMoviePosterPath("w185", movie.getPosterPath());
-                Picasso.with(getActivity()).load(posterPath).into(mPosterImageView);
-                mTitleTextView.setText(movie.getTitle());
-                mReleaseTextView.setText(movie.getReleaseDate());
-                if (movie.getRuntime()>0){
-                    mLengthTextView.setText(movie.getRuntime() + "min");
-                }
-                if (movie.getVoteAverage()>0) {
-                    mRatingTextView.setText(String.format("%s/10 (%s votes)", movie.getVoteAverage(), movie.getVoteCount()));
-                }
-                mSynopsisTextView.setText(movie.getOverview());
-            }
+            mMovieDetails = result.getResult();
+            updateMovieDetails();
 
+        }
+    }
+
+    private void updateMovieDetails() {
+        if (mMovieDetails != null) {
+            String posterPath = MoviesApiClient.BuildMoviePosterPath("w185", mMovieDetails.getPosterPath());
+            Picasso.with(getActivity()).load(posterPath).into(mPosterImageView);
+            mTitleTextView.setText(mMovieDetails.getTitle());
+            mReleaseTextView.setText(mMovieDetails.getReleaseDate());
+            if (mMovieDetails.getRuntime()>0){
+                mLengthTextView.setText(mMovieDetails.getRuntime() + "min");
+            }
+            if (mMovieDetails.getVoteAverage()>0) {
+                mRatingTextView.setText(String.format("%s/10 (%s votes)", mMovieDetails.getVoteAverage(), mMovieDetails.getVoteCount()));
+            }
+            mSynopsisTextView.setText(mMovieDetails.getOverview());
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getMovieDetails();
+        if (mMovieDetails == null) {
+            getMovieDetails();
+        }
     }
 
 
