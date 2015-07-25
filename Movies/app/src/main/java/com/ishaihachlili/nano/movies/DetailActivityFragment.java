@@ -1,8 +1,6 @@
 package com.ishaihachlili.nano.movies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +8,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ishaihachlili.nano.movies.Api.Model.MovieDetailsModel;
-import com.ishaihachlili.nano.movies.Api.MoviesApi;
+import com.ishaihachlili.nano.movies.api.Model.MovieDetailsModel;
+import com.ishaihachlili.nano.movies.api.MoviesApiClient;
+import com.ishaihachlili.nano.movies.bus.GetMovieDetailsEvent;
+import com.ishaihachlili.nano.movies.bus.GotMovieDetailsEvent;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailActivityFragment extends BaseFragment {
 
     private ImageView mPosterImageView;
     private TextView mTitleTextView;
@@ -49,39 +50,23 @@ public class DetailActivityFragment extends Fragment {
     }
 
     private void getMovieDetails() {
-        FetchMovieDetailsTask movieDetailsTask = new FetchMovieDetailsTask();
-
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             Integer movieId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
             if (movieId>0){
-                movieDetailsTask.execute(movieId);
+                Bus.post(new GetMovieDetailsEvent(movieId));
             }
         }
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getMovieDetails();
-    }
 
-    public class FetchMovieDetailsTask extends AsyncTask<Integer, Void, MovieDetailsModel> {
-        private final String LOG_TAG = FetchMovieDetailsTask.class.getSimpleName();
-
-        @Override
-        protected MovieDetailsModel doInBackground(Integer... params) {
-            if (params.length == 0) {
-                return null;
-            }
-            return new MoviesApi().GetMovieDetails(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(MovieDetailsModel movie) {
+    @Subscribe
+    public void onGotMoviesEvent(GotMovieDetailsEvent result){
+        if (result.getResult() != null) {
+            MovieDetailsModel movie = result.getResult();
             if (movie != null) {
-                String posterPath = MoviesApi.BuildMoviePosterPath("w185", movie.getPosterPath());
+                String posterPath = MoviesApiClient.BuildMoviePosterPath("w185", movie.getPosterPath());
                 Picasso.with(getActivity()).load(posterPath).into(mPosterImageView);
                 mTitleTextView.setText(movie.getTitle());
                 mReleaseTextView.setText(movie.getReleaseDate());
@@ -93,7 +78,16 @@ public class DetailActivityFragment extends Fragment {
                 }
                 mSynopsisTextView.setText(movie.getOverview());
             }
+
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getMovieDetails();
+    }
+
+
 
 }

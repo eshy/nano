@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import com.ishaihachlili.nano.movies.Api.Model.MovieItemModel;
-import com.ishaihachlili.nano.movies.Api.MoviesApi;
+import com.ishaihachlili.nano.movies.api.Model.MovieItemModel;
+import com.ishaihachlili.nano.movies.api.MoviesApiClient;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -28,7 +28,7 @@ public class MoviesArrayAdapter extends ArrayAdapter<MovieItemModel> {
         MovieItemModel movie = getItem(position);
         if (movie != null) {
             ImageView imageView = (ImageView) rowView.findViewById(R.id.movie_poster);
-            String posterPath = MoviesApi.BuildMoviePosterPath("w185", movie.getPosterPath());
+            String posterPath = MoviesApiClient.BuildMoviePosterPath("w185", movie.getPosterPath());
             Picasso.with(_context).load(posterPath).into(imageView);
         }
 

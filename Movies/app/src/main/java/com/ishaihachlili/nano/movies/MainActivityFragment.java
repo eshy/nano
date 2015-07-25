@@ -2,10 +2,9 @@ package com.ishaihachlili.nano.movies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,17 +14,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-
-import com.ishaihachlili.nano.movies.Api.Model.MovieItemModel;
-import com.ishaihachlili.nano.movies.Api.MoviesApi;
+import com.google.gson.Gson;
+import com.ishaihachlili.nano.movies.api.Model.MovieItemModel;
+import com.ishaihachlili.nano.movies.bus.GetMoviesEvent;
+import com.ishaihachlili.nano.movies.bus.GotMoviesEvent;
+import com.squareup.otto.Subscribe;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends BaseFragment {
+    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     private MoviesArrayAdapter mMoviesAdapter;
+    private MovieItemModel[] mMovies;
 
     public MainActivityFragment() {
     }
@@ -54,6 +57,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "MainActivityFragment - onCreateView");
 
         mMoviesAdapter =new MoviesArrayAdapter(getActivity(), R.layout.list_item_movie);
 
@@ -76,40 +80,64 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG, "MainActivityFragment - onSaveInstanceState");
+        if (mMovies != null && mMovies.length>0) {
+            Log.d(LOG_TAG, "MainActivityFragment - onSaveInstanceState - Save Movies");
+            Gson gson = new Gson();
+            String json = gson.toJson(mMovies);
+            outState.putString("movies", json);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(LOG_TAG, "MainActivityFragment - onActivityCreated");
+
+        if (savedInstanceState != null){
+            Log.d(LOG_TAG, "MainActivityFragment - onActivityCreated - LoadMovies");
+            //using gson instead of parcelable because the class already has the attributes for json
+            Gson gson = new Gson();
+            mMovies = gson.fromJson(savedInstanceState.getString("movies", "[]"), MovieItemModel[].class);
+            updateAdapter();
+        }
+    }
+
     private void updateMovies() {
-        FetchMoviesTask moviesTask = new FetchMoviesTask();
+        Log.d(LOG_TAG, "MainActivityFragment - updateMovies");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.pref_sorting_key),
-                getString(R.string.pref_sorting_default_value));
-        moviesTask.execute(sortOrder);
+        String sortOrder = prefs.getString(getString(R.string.pref_sorting_key), getString(R.string.pref_sorting_default_value));
+
+        Bus.post(new GetMoviesEvent(sortOrder));
+    }
+
+    @Subscribe
+    public void onGotMoviesEvent(GotMoviesEvent result){
+        Log.d(LOG_TAG, "MainActivityFragment - onGotMoviesEvent");
+        if (result.getResults() != null) {
+            mMovies = result.getResults().getMovies();
+            updateAdapter();
+        }
+    }
+
+    private void updateAdapter() {
+        Log.d(LOG_TAG, "MainActivityFragment - updateAdapter");
+        mMoviesAdapter.clear();
+        for(MovieItemModel movie : mMovies) {
+            mMoviesAdapter.add(movie);
+        }
     }
 
     @Override
     public void onStart() {
+        Log.d(LOG_TAG, "MainActivityFragment - onStart");
         super.onStart();
-        updateMovies();
-    }
-
-    public class FetchMoviesTask extends AsyncTask<String, Void, MovieItemModel[]> {
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
-
-        @Override
-        protected MovieItemModel[] doInBackground(String... params) {
-            if (params.length == 0) {
-                return null;
-            }
-
-            return new MoviesApi().GetMovies(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(MovieItemModel[] result) {
-            if (result != null) {
-                mMoviesAdapter.clear();
-                for(MovieItemModel movie : result) {
-                    mMoviesAdapter.add(movie);
-                }
-            }
+        if (mMovies == null || mMovies.length==0) {
+            Log.d(LOG_TAG, "MainActivityFragment - onStart - get movies");
+            updateMovies();
         }
     }
 }
