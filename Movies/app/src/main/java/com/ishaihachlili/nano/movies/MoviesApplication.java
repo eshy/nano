@@ -2,6 +2,7 @@ package com.ishaihachlili.nano.movies;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ishaihachlili.nano.movies.bus.ApiErrorEvent;
 import com.ishaihachlili.nano.movies.bus.BusProvider;
@@ -28,7 +29,7 @@ public class MoviesApplication extends Application {
 
     @Subscribe
     public void onApiError(ApiErrorEvent event) {
-        //toast("Something went wrong, please try again.");
+        Toast.makeText(this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
         Log.e(LOG_TAG, event.getErrorMessage());
     }
 }
