@@ -81,6 +81,13 @@ public class MovieDetailsModel {
     @Expose
     private Integer voteCount;
 
+    @Expose
+    private TrailersModel trailers;
+
+    @Expose
+    private ReviewsModel reviews;
+
+
     /**
      *
      * @return
@@ -494,6 +501,42 @@ public class MovieDetailsModel {
      */
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    /**
+     *
+     * @return
+     * The trailers
+     */
+    public TrailersModel getTrailers() {
+        return trailers;
+    }
+
+    /**
+     *
+     * @param trailers
+     * The trailers
+     */
+    public void setTrailers(TrailersModel trailers) {
+        this.trailers = trailers;
+    }
+
+    /**
+     *
+     * @return
+     * The reviews
+     */
+    public ReviewsModel getReviews() {
+        return reviews;
+    }
+
+    /**
+     *
+     * @param reviews
+     * The reviews
+     */
+    public void setReviews(ReviewsModel reviews) {
+        this.reviews = reviews;
     }
 
 }

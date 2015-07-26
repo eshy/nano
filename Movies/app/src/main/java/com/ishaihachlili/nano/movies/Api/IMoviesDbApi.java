@@ -14,12 +14,7 @@ public interface IMoviesDbApi {
     @GET("/discover/movie")
     void movies(@Query("sort_by") String sortBy, @Query("vote_count.gte") Integer minVoteCount, @Query("api_key") String apiKey, Callback<MovieResultsModel> callback);
 
-    @GET("/movie/{id}")
+    @GET("/movie/{id}?append_to_response=trailers,reviews")
     void movieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey, Callback<MovieDetailsModel> callback);
 
-    @GET("/movie/{id}/videos")
-    void movieTrailers(@Path("id") Integer movieId, @Query("api_key") String apiKey, Callback<TrailerResultsModel> callback);
-
-    @GET("/movie/{id}/reviews")
-    void movieReviews(@Path("id") Integer movieId, @Query("api_key") String apiKey, Callback<ReviewResultsModel> callback);
 }

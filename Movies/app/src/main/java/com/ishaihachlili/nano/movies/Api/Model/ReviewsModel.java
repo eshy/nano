@@ -6,40 +6,18 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ishai on 7/26/2015.
- */
-public class ReviewResultsModel {
-    @Expose
-    private Integer id;
+public class ReviewsModel {
+
     @Expose
     private Integer page;
     @Expose
-    private List<ReviewModel> reviews = new ArrayList<ReviewModel>();
+    private List<ReviewModel> results = new ArrayList<ReviewModel>();
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     * The id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     /**
      *
@@ -64,17 +42,17 @@ public class ReviewResultsModel {
      * @return
      * The results
      */
-    public List<ReviewModel> getReviews() {
-        return reviews;
+    public List<ReviewModel> getResults() {
+        return results;
     }
 
     /**
      *
-     * @param reviews
+     * @param results
      * The results
      */
-    public void setReviews(List<ReviewModel> reviews) {
-        this.reviews = reviews;
+    public void setResults(List<ReviewModel> results) {
+        this.results = results;
     }
 
     /**
@@ -114,4 +92,3 @@ public class ReviewResultsModel {
     }
 
 }
-

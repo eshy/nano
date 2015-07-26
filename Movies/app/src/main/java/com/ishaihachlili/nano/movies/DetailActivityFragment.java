@@ -13,7 +13,6 @@ import com.ishaihachlili.nano.movies.api.Model.MovieDetailsModel;
 import com.ishaihachlili.nano.movies.api.MoviesApiClient;
 import com.ishaihachlili.nano.movies.bus.events.GetMovieDetailsEvent;
 import com.ishaihachlili.nano.movies.bus.events.GotMovieDetailsEvent;
-import com.ishaihachlili.nano.movies.bus.events.MovieDetailsType;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -83,7 +82,7 @@ public class DetailActivityFragment extends BaseFragment {
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             Integer movieId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
             if (movieId>0){
-                Bus.post(new GetMovieDetailsEvent(movieId, MovieDetailsType.BasicInfo));
+                Bus.post(new GetMovieDetailsEvent(movieId));
             }
         }
 

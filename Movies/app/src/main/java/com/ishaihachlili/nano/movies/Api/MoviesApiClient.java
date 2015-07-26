@@ -52,14 +52,6 @@ public class MoviesApiClient {
         mMoviesDbApi.movieDetails(movieId, ApiKey, callback);
     }
 
-    public void getMovieTrailers(Integer movieId, Callback<TrailerResultsModel> callback){
-        mMoviesDbApi.movieTrailers(movieId, ApiKey, callback);
-    }
-
-    public void getMovieReviews(Integer movieId, Callback<ReviewResultsModel> callback){
-        mMoviesDbApi.movieReviews(movieId, ApiKey, callback);
-    }
-
     public static String BuildMoviePosterPath(String width, String posterPath) {
         return PosterBaseUrl + width + posterPath;
     }
