@@ -4,7 +4,7 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ishaihachlili.nano.movies.bus.ApiErrorEvent;
+import com.ishaihachlili.nano.movies.bus.events.ApiErrorEvent;
 import com.ishaihachlili.nano.movies.bus.BusProvider;
 import com.ishaihachlili.nano.movies.bus.MoviesManager;
 import com.squareup.otto.Bus;

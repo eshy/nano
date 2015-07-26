@@ -1,4 +1,4 @@
-package com.ishaihachlili.nano.movies.bus;
+package com.ishaihachlili.nano.movies.bus.events;
 
 import com.ishaihachlili.nano.movies.api.Model.MovieDetailsModel;
 
@@ -13,3 +13,4 @@ public class GotMovieDetailsEvent {
         return result;
     }
 }
+

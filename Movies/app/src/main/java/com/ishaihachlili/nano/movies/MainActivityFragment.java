@@ -1,10 +1,7 @@
 package com.ishaihachlili.nano.movies;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +13,8 @@ import android.widget.GridView;
 
 import com.google.gson.Gson;
 import com.ishaihachlili.nano.movies.api.Model.MovieItemModel;
-import com.ishaihachlili.nano.movies.bus.GetMoviesEvent;
-import com.ishaihachlili.nano.movies.bus.GotMoviesEvent;
+import com.ishaihachlili.nano.movies.bus.events.GetMoviesEvent;
+import com.ishaihachlili.nano.movies.bus.events.GotMoviesEvent;
 import com.squareup.otto.Subscribe;
 
 

@@ -2,7 +2,6 @@ package com.ishaihachlili.nano.movies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.ishaihachlili.nano.movies.api.Model.MovieDetailsModel;
 import com.ishaihachlili.nano.movies.api.MoviesApiClient;
-import com.ishaihachlili.nano.movies.bus.GetMovieDetailsEvent;
-import com.ishaihachlili.nano.movies.bus.GotMovieDetailsEvent;
+import com.ishaihachlili.nano.movies.bus.events.GetMovieDetailsEvent;
+import com.ishaihachlili.nano.movies.bus.events.GotMovieDetailsEvent;
+import com.ishaihachlili.nano.movies.bus.events.MovieDetailsType;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -83,14 +83,14 @@ public class DetailActivityFragment extends BaseFragment {
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             Integer movieId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
             if (movieId>0){
-                Bus.post(new GetMovieDetailsEvent(movieId));
+                Bus.post(new GetMovieDetailsEvent(movieId, MovieDetailsType.BasicInfo));
             }
         }
 
     }
 
     @Subscribe
-    public void onGotMoviesEvent(GotMovieDetailsEvent result){
+    public void onGotMovieDetailsEvent(GotMovieDetailsEvent result){
         if (result.getResult() != null) {
             mMovieDetails = result.getResult();
             updateMovieDetails();
