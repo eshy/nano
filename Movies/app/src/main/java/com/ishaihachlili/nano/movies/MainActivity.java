@@ -17,7 +17,6 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSortBy = Utility.getSortingOrder(this);
         setContentView(R.layout.activity_main);
 
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
@@ -60,7 +59,9 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
         super.onResume();
         Log.d(LOG_TAG, "MainActivity - onResume");
         String sortBy = Utility.getSortingOrder(this);
-        if (sortBy != null && !sortBy.equals(mSortBy)){
+        if (mSortBy == null || sortBy == null || !sortBy.equals(mSortBy)){
+        //if (sortBy != null && !sortBy.equals(mSortBy)){
+            mSortBy = sortBy;
             Log.d(LOG_TAG, "MainActivity - onResume - call onSortingChanged");
             MainActivityFragment fragment = (MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_movies);
             if ( null != fragment ) {
