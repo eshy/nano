@@ -15,8 +15,7 @@ public class DetailActivity extends ActionBarActivity {
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putParcelable(DetailActivityFragment.MOVIE_ID, getIntent().getData());
-
+            arguments.putInt(DetailActivityFragment.MOVIE_ID, getIntent().getIntExtra(Intent.EXTRA_TEXT, 0));
             DetailActivityFragment fragment = new DetailActivityFragment();
             fragment.setArguments(arguments);
 

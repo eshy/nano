@@ -28,7 +28,7 @@ public class MainActivityFragment extends BaseFragment {
     private MovieItemModel[] mMovies;
 
     public interface Callback {
-        public void onItemSelected (Integer movieId);
+        public void onItemSelected (Integer movieId, Boolean isFirst);
     }
 
     public MainActivityFragment() {
@@ -72,7 +72,7 @@ public class MainActivityFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Integer movieId = mMoviesAdapter.getItem(position).getMovieId();
-                ((Callback) getActivity()).onItemSelected(movieId);
+                ((Callback) getActivity()).onItemSelected(movieId, false);
             }
         });
 
@@ -124,7 +124,7 @@ public class MainActivityFragment extends BaseFragment {
             //load the first movie when loading movies
             Integer movieId = mMoviesAdapter.getItem(0).getMovieId();
             Log.d(LOG_TAG, "MainActivityFragment - onGotMoviesEvent - load movieId=" + movieId);
-            ((Callback) getActivity()).onItemSelected(movieId);
+            ((Callback) getActivity()).onItemSelected(movieId, true);
         }
     }
 

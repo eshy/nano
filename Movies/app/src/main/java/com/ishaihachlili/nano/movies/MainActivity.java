@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
     }
 
     @Override
-    public void onItemSelected(Integer movieId) {
+    public void onItemSelected(Integer movieId, Boolean isFirst) {
         Log.d(LOG_TAG, "MainActivity - onItemSelected");
         if (mTwoPane) {
             Bundle args = new Bundle();
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commit();
-        } else {
+        } else if (!isFirst) {
             Intent intent = new Intent(this, DetailActivity.class)
                     .putExtra(Intent.EXTRA_TEXT, movieId); //TODO: Fix this
             startActivity(intent);
