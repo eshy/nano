@@ -22,8 +22,11 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivityFragment extends BaseFragment {
     private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    static final String MOVIE_ID = "MOVIE_ID";
 
+    private Integer mMovieId = 0;
     private MovieDetailsModel mMovieDetails;
+
     private ImageView mPosterImageView;
     private TextView mTitleTextView;
     private TextView mReleaseTextView;
@@ -38,6 +41,11 @@ public class DetailActivityFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null){
+            mMovieId = arguments.getInt(DetailActivityFragment.MOVIE_ID);
+        }
         View rootView =  inflater.inflate(R.layout.fragment_detail, container, false);
 
         mPosterImageView = (ImageView) rootView.findViewById(R.id.movie_poster);
@@ -78,14 +86,9 @@ public class DetailActivityFragment extends BaseFragment {
     }
 
     private void getMovieDetails() {
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            Integer movieId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
-            if (movieId>0){
-                Bus.post(new GetMovieDetailsEvent(movieId));
-            }
+        if (mMovieId > 0) {
+            Bus.post(new GetMovieDetailsEvent(mMovieId));
         }
-
     }
 
     @Subscribe
@@ -120,7 +123,7 @@ public class DetailActivityFragment extends BaseFragment {
             getMovieDetails();
         }
     }
-
-
+//YouTube play video intent
+//startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=cxLG2wtE7TM")));
 
 }

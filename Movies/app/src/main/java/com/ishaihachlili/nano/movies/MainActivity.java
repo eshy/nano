@@ -3,18 +3,32 @@ package com.ishaihachlili.nano.movies;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Spinner;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MainActivityFragment.Callback {
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private boolean mTwoPane;
+    private String mSortBy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSortBy = Utility.getSortingOrder(this);
         setContentView(R.layout.activity_main);
+
+        mTwoPane = findViewById(R.id.movie_detail_container) != null;
+        if (mTwoPane ) {
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        }
+
     }
 
 
@@ -39,5 +53,39 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "MainActivity - onResume");
+        String sortBy = Utility.getSortingOrder(this);
+        if (sortBy != null && !sortBy.equals(mSortBy)){
+            Log.d(LOG_TAG, "MainActivity - onResume - call onSortingChanged");
+            MainActivityFragment fragment = (MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_movies);
+            if ( null != fragment ) {
+                fragment.onSortingChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(Integer movieId) {
+        Log.d(LOG_TAG, "MainActivity - onItemSelected");
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putInt(DetailActivityFragment.MOVIE_ID, movieId);
+
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .putExtra(Intent.EXTRA_TEXT, movieId); //TODO: Fix this
+            startActivity(intent);
+        }
     }
 }

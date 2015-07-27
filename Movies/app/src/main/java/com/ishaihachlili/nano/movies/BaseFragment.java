@@ -1,6 +1,6 @@
 package com.ishaihachlili.nano.movies;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.ishaihachlili.nano.movies.bus.BusProvider;
 import com.squareup.otto.Bus;
