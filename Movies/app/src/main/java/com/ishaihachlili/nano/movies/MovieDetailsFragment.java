@@ -1,6 +1,5 @@
 package com.ishaihachlili.nano.movies;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +19,8 @@ import com.squareup.picasso.Picasso;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends BaseFragment {
-    private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+public class MovieDetailsFragment extends BaseFragment {
+    private final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
     static final String MOVIE_ID = "MOVIE_ID";
 
     private Integer mMovieId = 0;
@@ -34,7 +33,7 @@ public class DetailActivityFragment extends BaseFragment {
     private TextView mRatingTextView;
     private TextView mSynopsisTextView;
 
-    public DetailActivityFragment() {
+    public MovieDetailsFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -44,9 +43,9 @@ public class DetailActivityFragment extends BaseFragment {
 
         Bundle arguments = getArguments();
         if (arguments != null){
-            mMovieId = arguments.getInt(DetailActivityFragment.MOVIE_ID);
+            mMovieId = arguments.getInt(MovieDetailsFragment.MOVIE_ID);
         }
-        View rootView =  inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         mPosterImageView = (ImageView) rootView.findViewById(R.id.movie_poster);
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
@@ -61,9 +60,9 @@ public class DetailActivityFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        Log.d(LOG_TAG, "DetailActivityFragment - onSaveInstanceState");
+//        Log.d(LOG_TAG, "MovieDetailsFragment - onSaveInstanceState");
         if (mMovieDetails != null) {
-//            Log.d(LOG_TAG, "DetailActivityFragment - onSaveInstanceState - Save Movie Details");
+//            Log.d(LOG_TAG, "MovieDetailsFragment - onSaveInstanceState - Save Movie Details");
             Gson gson = new Gson();
             String json = gson.toJson(mMovieDetails);
             outState.putString("moviedetails", json);
@@ -73,10 +72,10 @@ public class DetailActivityFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        Log.d(LOG_TAG, "DetailActivityFragment - onActivityCreated");
+//        Log.d(LOG_TAG, "MovieDetailsFragment - onActivityCreated");
 
         if (savedInstanceState != null){
-//            Log.d(LOG_TAG, "DetailActivityFragment - onActivityCreated - Load Movie Details");
+//            Log.d(LOG_TAG, "MovieDetailsFragment - onActivityCreated - Load Movie Details");
 
             //using gson instead of parcelable because the class already has the attributes for json
             Gson gson = new Gson();

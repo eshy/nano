@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
         if (mTwoPane ) {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
+                        .replace(R.id.movie_detail_container, new MovieDetailsFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             }
         }
@@ -75,17 +75,17 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
         Log.d(LOG_TAG, "MainActivity - onItemSelected");
         if (mTwoPane) {
             Bundle args = new Bundle();
-            args.putInt(DetailActivityFragment.MOVIE_ID, movieId);
+            args.putInt(MovieDetailsFragment.MOVIE_ID, movieId);
 
-            DetailActivityFragment fragment = new DetailActivityFragment();
+            MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commit();
         } else if (!isFirst) {
-            Intent intent = new Intent(this, DetailActivity.class)
-                    .putExtra(Intent.EXTRA_TEXT, movieId); //TODO: Fix this
+            Intent intent = new Intent(this, MovieDetailsActivity.class)
+                    .putExtra(Intent.EXTRA_TEXT, movieId);
             startActivity(intent);
         }
     }
