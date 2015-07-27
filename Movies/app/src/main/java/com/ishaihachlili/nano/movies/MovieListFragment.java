@@ -21,8 +21,8 @@ import com.squareup.otto.Subscribe;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends BaseFragment {
-    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+public class MovieListFragment extends BaseFragment {
+    private final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
     private MoviesArrayAdapter mMoviesAdapter;
     private MovieItemModel[] mMovies;
@@ -31,7 +31,7 @@ public class MainActivityFragment extends BaseFragment {
         public void onItemSelected (Integer movieId, Boolean isFirst);
     }
 
-    public MainActivityFragment() {
+    public MovieListFragment() {
     }
 
     @Override
@@ -58,11 +58,11 @@ public class MainActivityFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        Log.d(LOG_TAG, "MainActivityFragment - onCreateView");
+//        Log.d(LOG_TAG, "MovieListFragment - onCreateView");
 
         mMoviesAdapter =new MoviesArrayAdapter(getActivity(), R.layout.list_item_movie);
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
@@ -82,9 +82,9 @@ public class MainActivityFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        Log.d(LOG_TAG, "MainActivityFragment - onSaveInstanceState");
+//        Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState");
         if (mMovies != null && mMovies.length>0) {
-//            Log.d(LOG_TAG, "MainActivityFragment - onSaveInstanceState - Save Movies");
+//            Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState - Save Movies");
             Gson gson = new Gson();
             String json = gson.toJson(mMovies);
             outState.putString("movies", json);
@@ -94,10 +94,10 @@ public class MainActivityFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        Log.d(LOG_TAG, "MainActivityFragment - onActivityCreated");
+//        Log.d(LOG_TAG, "MovieListFragment - onActivityCreated");
 
         if (savedInstanceState != null){
-            Log.d(LOG_TAG, "MainActivityFragment - onActivityCreated - LoadMovies");
+            Log.d(LOG_TAG, "MovieListFragment - onActivityCreated - LoadMovies");
             //using gson instead of parcelable because the class already has the attributes for json
             Gson gson = new Gson();
             mMovies = gson.fromJson(savedInstanceState.getString("movies", "[]"), MovieItemModel[].class);
@@ -110,26 +110,26 @@ public class MainActivityFragment extends BaseFragment {
     }
 
     private void updateMovies() {
-        Log.d(LOG_TAG, "MainActivityFragment - updateMovies");
+        Log.d(LOG_TAG, "MovieListFragment - updateMovies");
         Bus.post(new GetMoviesEvent(Utility.getSortingOrder(getActivity())));
     }
 
     @Subscribe
     public void onGotMoviesEvent(GotMoviesEvent result){
-        Log.d(LOG_TAG, "MainActivityFragment - onGotMoviesEvent");
+        Log.d(LOG_TAG, "MovieListFragment - onGotMoviesEvent");
         if (result.getResults() != null) {
             mMovies = result.getResults().getMovies();
             updateAdapter();
 
             //load the first movie when loading movies
             Integer movieId = mMoviesAdapter.getItem(0).getMovieId();
-            Log.d(LOG_TAG, "MainActivityFragment - onGotMoviesEvent - load movieId=" + movieId);
+            Log.d(LOG_TAG, "MovieListFragment - onGotMoviesEvent - load movieId=" + movieId);
             ((Callback) getActivity()).onItemSelected(movieId, true);
         }
     }
 
     private void updateAdapter() {
-        Log.d(LOG_TAG, "MainActivityFragment - updateAdapter");
+        Log.d(LOG_TAG, "MovieListFragment - updateAdapter");
         mMoviesAdapter.clear();
 
         if (mMovies==null || mMovies.length==0){ return; }
@@ -141,11 +141,11 @@ public class MainActivityFragment extends BaseFragment {
 
     @Override
     public void onStart() {
-        Log.d(LOG_TAG, "MainActivityFragment - onStart");
+        Log.d(LOG_TAG, "MovieListFragment - onStart");
         super.onStart();
 
         if (mMovies == null || mMovies.length==0) {
-//            Log.d(LOG_TAG, "MainActivityFragment - onStart - get movies (mSortOrder=" + mSortOrder + ", Sort Setting=" + Utility.getSortingOrder(getActivity()));
+//            Log.d(LOG_TAG, "MovieListFragment - onStart - get movies (mSortOrder=" + mSortOrder + ", Sort Setting=" + Utility.getSortingOrder(getActivity()));
             updateMovies();
         }
     }

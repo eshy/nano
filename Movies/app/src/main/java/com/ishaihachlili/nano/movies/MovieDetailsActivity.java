@@ -7,16 +7,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class DetailActivity extends ActionBarActivity {
+public class MovieDetailsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_movie_detail);
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putInt(DetailActivityFragment.MOVIE_ID, getIntent().getIntExtra(Intent.EXTRA_TEXT, 0));
-            DetailActivityFragment fragment = new DetailActivityFragment();
+            arguments.putInt(MovieDetailsFragment.MOVIE_ID, getIntent().getIntExtra(Intent.EXTRA_TEXT, 0));
+            MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
