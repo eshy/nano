@@ -25,7 +25,12 @@ public class MovieListFragment extends BaseFragment {
     private final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
     private MoviesArrayAdapter mMoviesAdapter;
+    private GridView mGridView;
+    private int mPosition = GridView.INVALID_POSITION;
     private MovieItemModel[] mMovies;
+
+    private static final String SELECTED_POSITION_KEY = "selected_position";
+    private static final String MOVIE_LIST_KEY = "movies";
 
     public interface Callback {
         public void onItemSelected (Integer movieId, Boolean isFirst);
@@ -58,23 +63,28 @@ public class MovieListFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        Log.d(LOG_TAG, "MovieListFragment - onCreateView");
+        Log.d(LOG_TAG, "MovieListFragment - onCreateView");
 
         mMoviesAdapter =new MoviesArrayAdapter(getActivity(), R.layout.list_item_movie);
 
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-        gridView.setAdapter(mMoviesAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
+        mGridView.setAdapter(mMoviesAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Integer movieId = mMoviesAdapter.getItem(position).getMovieId();
                 ((Callback) getActivity()).onItemSelected(movieId, false);
+                mPosition=position;
             }
         });
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_POSITION_KEY)){
+            mPosition = savedInstanceState.getInt(SELECTED_POSITION_KEY);
+        }
 
         return rootView;
     }
@@ -82,26 +92,32 @@ public class MovieListFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState");
+        Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState");
+
+        if (mPosition != GridView.INVALID_POSITION) {
+            outState.putInt(SELECTED_POSITION_KEY, mPosition);
+        }
         if (mMovies != null && mMovies.length>0) {
-//            Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState - Save Movies");
+            Log.d(LOG_TAG, "MovieListFragment - onSaveInstanceState - Save Movies");
             Gson gson = new Gson();
             String json = gson.toJson(mMovies);
-            outState.putString("movies", json);
+            outState.putString(MOVIE_LIST_KEY, json);
         }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        Log.d(LOG_TAG, "MovieListFragment - onActivityCreated");
+        Log.d(LOG_TAG, "MovieListFragment - onActivityCreated");
 
         if (savedInstanceState != null){
             Log.d(LOG_TAG, "MovieListFragment - onActivityCreated - LoadMovies");
             //using gson instead of parcelable because the class already has the attributes for json
-            Gson gson = new Gson();
-            mMovies = gson.fromJson(savedInstanceState.getString("movies", "[]"), MovieItemModel[].class);
-            updateAdapter();
+            if (savedInstanceState.containsKey(MOVIE_LIST_KEY)) {
+                Gson gson = new Gson();
+                mMovies = gson.fromJson(savedInstanceState.getString(MOVIE_LIST_KEY, "[]"), MovieItemModel[].class);
+                updateAdapter();
+            }
         }
     }
 
